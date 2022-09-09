@@ -9,8 +9,11 @@ namespace ydasroffline {
 
 typedef std::function<void(std::string)> Callback;
 
-// 通知程序结束识别
+// 通知程序结束识别。发送结束符
 bool ASREnd();
+
+// 等待ASR结束。调用ASREnd后，尾部的数据可能还在计算，立马结束识别会有漏识别。
+void WaitASREnd(int maxwait_ms=1000);
 
 // 给引擎push数据，必须在载入模型之后进行
 bool AcceptWaveform(const short *input, int len);
@@ -31,6 +34,10 @@ bool ClearWavformBuffer();
 
 // 载入模型后开始解码
 bool ASRStart();
+
+// 配置智云应用ID和秘钥，并打开有网时走智云在线ASR, 当设置close_onlineasr=true时，
+bool SetUseYDOnlineASR(std::string now_lang, std::string zhiyun_appkey,
+                       std::string zhiyun_appsecret, bool close_onlineasr=false);
 
 // 设置前端静音检测时长，开始后延续len长度的静音，自动断开链接
 bool SetHeadSilenceLenForForceDisconnect(std::string now_lang, int millsec_len);
